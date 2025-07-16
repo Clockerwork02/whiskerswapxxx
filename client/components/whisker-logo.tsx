@@ -1,4 +1,4 @@
-import logoImage from '@assets/IMG_3906_1752586079724.png';
+import logoImage from '@/assets/whisker-logo.png';
 
 interface WhiskerLogoProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
