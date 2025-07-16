@@ -28,7 +28,7 @@ export function WhiskerLogo({ size = 'md', showText = true, className = '' }: Wh
           onLoad={() => console.log('✅ WhiskerSwap logo loaded successfully')}
           onError={(e) => {
             console.log('❌ WhiskerSwap logo failed to load, trying fallback');
-            e.currentTarget.src = '/whisker-cat.png';
+            e.currentTarget.src = '/whisker-logo.png';
           }}
         />
         
