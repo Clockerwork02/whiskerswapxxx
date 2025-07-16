@@ -1,3 +1,5 @@
+import logoImage from '@assets/IMG_3906_1752586079724.png';
+
 interface WhiskerLogoProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
   showText?: boolean;
@@ -19,14 +21,14 @@ export function WhiskerLogo({ size = 'md', showText = true, className = '' }: Wh
       {/* WhiskerSwap Logo - Beautiful 3D Cat */}
       <div className="relative">
         <img 
-          src="/whisker-cat.png?v=4"
+          src={logoImage}
           alt="WhiskerSwap Logo"
           className="object-contain rounded-full"
           style={{ width: icon, height: icon }}
           onLoad={() => console.log('✅ WhiskerSwap logo loaded successfully')}
           onError={(e) => {
             console.log('❌ WhiskerSwap logo failed to load, trying fallback');
-            e.currentTarget.src = '/cat-logo.png';
+            e.currentTarget.src = '/whisker-cat.png';
           }}
         />
         
