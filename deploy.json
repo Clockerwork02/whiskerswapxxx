@@ -1,0 +1,26 @@
+{
+  "instructions": "Clean deployment package for GitHub",
+  "files_to_upload": [
+    "src/",
+    "public/",
+    "index.html",
+    "package-clean.json (rename to package.json)",
+    "vite-clean.config.ts (rename to vite.config.ts)",
+    "tailwind.config.ts",
+    "postcss.config.js",
+    "vercel.json",
+    "README.md",
+    ".gitignore"
+  ],
+  "exclude": [
+    "node_modules/",
+    "dist/",
+    "package-lock.json",
+    ".replit",
+    "components.json",
+    "drizzle.config.ts",
+    "server/",
+    "shared/",
+    "api/"
+  ]
+}

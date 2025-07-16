@@ -1,0 +1,52 @@
+[20:20:44.251] Running build in Washington, D.C., USA (East) – iad1
+[20:20:44.252] Build machine configuration: 2 cores, 8 GB
+[20:20:44.295] Cloning github.com/Clockerwork02/Whiskerswap (Branch: main, Commit: 135a914)
+[20:20:44.417] Previous build caches not available
+[20:20:44.594] Cloning completed: 298.000ms
+[20:20:44.925] Running "vercel build"
+[20:20:45.406] Vercel CLI 44.4.1
+[20:20:46.082] Running "install" command: `cd client && npm install`...
+[20:21:13.278] 
+[20:21:13.279] added 319 packages, and audited 320 packages in 27s
+[20:21:13.280] 
+[20:21:13.280] 47 packages are looking for funding
+[20:21:13.280]   run `npm fund` for details
+[20:21:13.285] 
+[20:21:13.285] 2 moderate severity vulnerabilities
+[20:21:13.286] 
+[20:21:13.286] To address all issues (including breaking changes), run:
+[20:21:13.286]   npm audit fix --force
+[20:21:13.286] 
+[20:21:13.286] Run `npm audit` for details.
+[20:21:14.329] 
+[20:21:14.329] added 1 package, and audited 321 packages in 831ms
+[20:21:14.330] 
+[20:21:14.330] 47 packages are looking for funding
+[20:21:14.330]   run `npm fund` for details
+[20:21:14.343] 
+[20:21:14.343] 2 moderate severity vulnerabilities
+[20:21:14.343] 
+[20:21:14.344] To address all issues (including breaking changes), run:
+[20:21:14.344]   npm audit fix --force
+[20:21:14.344] 
+[20:21:14.344] Run `npm audit` for details.
+[20:21:14.456] 
+[20:21:14.456] > whiskerswap-client@1.0.0 build
+[20:21:14.456] > vite build
+[20:21:14.457] 
+[20:21:14.982] [36mvite v5.4.19 [32mbuilding for production...[36m[39m
+[20:21:15.029] transforming...
+[20:21:18.183] [32m✓[39m 1669 modules transformed.
+[20:21:18.191] [31mx[39m Build failed in 3.19s
+[20:21:18.192] [31merror during build:
+[20:21:18.192] [31m[vite:asset] Could not load /vercel/path0/attached_assets/7E3E8DA6-224C-4175-A90C-3ACE8FEB6E34_1752479762149.png (imported by src/components/whisker-logo.tsx): ENOENT: no such file or directory, open '/vercel/path0/attached_assets/7E3E8DA6-224C-4175-A90C-3ACE8FEB6E34_1752479762149.png'[31m
+[20:21:18.192]     at async open (node:internal/fs/promises:639:25)
+[20:21:18.192]     at async Object.readFile (node:internal/fs/promises:1243:14)
+[20:21:18.192]     at async fileToBuiltUrl (file:///vercel/path0/client/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:20428:19)
+[20:21:18.193]     at async Object.load (file:///vercel/path0/client/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:20328:17)
+[20:21:18.194]     at async PluginDriver.hookFirstAndGetPlugin (file:///vercel/path0/client/node_modules/rollup/dist/es/shared/node-entry.js:22173:28)
+[20:21:18.194]     at async file:///vercel/path0/client/node_modules/rollup/dist/es/shared/node-entry.js:21177:33
+[20:21:18.194]     at async Queue.work (file:///vercel/path0/client/node_modules/rollup/dist/es/shared/node-entry.js:22401:32)[39m
+[20:21:18.214] Error: Command "cd client && npm install && npm run build" exited with 1
+[20:21:18.415] 
+[20:21:21.346] Exiting build container
