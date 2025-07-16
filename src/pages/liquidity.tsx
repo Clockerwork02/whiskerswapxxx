@@ -330,7 +330,7 @@ export default function Liquidity() {
               </Link>
               <div className="flex items-center space-x-2">
                 <img 
-                  src="/whisker-cat.png?v=5" 
+                  src="/whisker-logo.png" 
                   alt="WhiskerSwap Logo" 
                   className="w-6 h-6 object-contain rounded-full"
                 />
@@ -352,7 +352,7 @@ export default function Liquidity() {
               </Link>
               <div className="flex items-center space-x-3">
                 <img 
-                  src="/whisker-cat.png?v=5" 
+                  src="/whisker-logo.png" 
                   alt="WhiskerSwap Logo" 
                   className="w-8 h-8 object-contain rounded-full"
                   onLoad={() => console.log('✅ Header logo loaded')}
@@ -376,583 +376,267 @@ export default function Liquidity() {
               </div>
               <div className="text-center">
                 <div className="text-white font-medium">
-                  {realTimePools.reduce((sum, pool) => {
-                    const value = parseFloat(pool.real24hVolume.replace(/[$MK,]/g, ''));
-                    const multiplier = pool.real24hVolume.includes('M') ? 1000000 : 1000;
-                    return sum + (value * multiplier);
-                  }, 0) >= 1000000 
-                    ? `$${(realTimePools.reduce((sum, pool) => {
-                        const value = parseFloat(pool.real24hVolume.replace(/[$MK,]/g, ''));
-                        const multiplier = pool.real24hVolume.includes('M') ? 1000000 : 1000;
-                        return sum + (value * multiplier);
-                      }, 0) / 1000000).toFixed(1)}M`
-                    : `$${Math.round(realTimePools.reduce((sum, pool) => {
-                        const value = parseFloat(pool.real24hVolume.replace(/[$MK,]/g, ''));
-                        const multiplier = pool.real24hVolume.includes('M') ? 1000000 : 1000;
-                        return sum + (value * multiplier);
-                      }, 0) / 1000)}K`}
+                  {realTimePools.length} Pools
                 </div>
-                <div className="text-slate-400">24h Volume</div>
-              </div>
-              <div className="text-center">
-                <div className="text-green-400 font-medium">
-                  {(realTimePools.reduce((sum, pool) => sum + parseFloat(pool.realAPR.replace('%', '')), 0) / realTimePools.length).toFixed(1)}%
-                </div>
-                <div className="text-slate-400">Avg APR</div>
+                <div className="text-slate-400">Available</div>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8 max-w-7xl min-h-screen overflow-x-hidden">
-        <Tabs value={selectedTab} onValueChange={setSelectedTab} className="w-full">
-          <TabsList className="grid grid-cols-3 w-full max-w-md bg-slate-800 border-slate-700">
-            <TabsTrigger value="add" className="data-[state=active]:bg-[#7FFFD4] data-[state=active]:text-[#0B1A1E]">
-              <Plus className="w-4 h-4 mr-2" />
-              Add Liquidity
-            </TabsTrigger>
-            <TabsTrigger value="pools" className="data-[state=active]:bg-[#7FFFD4] data-[state=active]:text-[#0B1A1E]">
-              <Droplets className="w-4 h-4 mr-2" />
-              Pools
-            </TabsTrigger>
-            <TabsTrigger value="positions" className="data-[state=active]:bg-[#7FFFD4] data-[state=active]:text-[#0B1A1E]">
-              <Coins className="w-4 h-4 mr-2" />
-              My Positions
-            </TabsTrigger>
-          </TabsList>
-
-          {/* Add Liquidity Tab */}
-          <TabsContent value="add" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Pool Selection */}
-              <div className="lg:col-span-2">
-                <Card className="bg-slate-800/50 border-slate-700">
-                  <CardHeader>
-                    <CardTitle className="text-white flex items-center">
-                      <img 
-                        src="/whisker-cat.png?v=3" 
-                        alt="WhiskerSwap" 
-                        className="w-5 h-5 mr-2 object-contain flex-shrink-0"
-                        onError={(e) => {
-                          console.log('Logo failed to load in liquidity header');
-                          e.currentTarget.src = '/whisker-logo.png';
-                        }}
-                      />
-                      Add to WhiskerSwap Pool
-                    </CardTitle>
-                    <CardDescription>
-                      Choose a WhiskerSwap pool and add equal values of both tokens
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    {/* Pool Selector */}
-                    <div className="space-y-2">
-                      <Label className="text-slate-200">Select WhiskerSwap Pool</Label>
-                      <div className="relative">
-                        <Button
-                          variant="outline"
-                          className="w-full justify-between bg-slate-700 border-slate-600 text-white hover:bg-slate-600"
-                          onClick={() => setIsPoolDropdownOpen(!isPoolDropdownOpen)}
-                        >
-                          {selectedPool || "Choose a WhiskerSwap pool"}
-                          <ArrowDown className="h-4 w-4" />
-                        </Button>
-                        
-                        {isPoolDropdownOpen && (
-                          <div className="absolute z-50 w-full mt-1 bg-slate-800 border border-slate-700 rounded-md shadow-lg max-h-[300px] overflow-y-auto overflow-x-hidden">
-                            {realTimePools.map((pool) => (
-                              <div
-                                key={pool.name}
-                                className="flex items-center space-x-2 w-full p-3 text-white hover:bg-slate-700 cursor-pointer overflow-hidden"
-                                onClick={() => {
-                                  setSelectedPool(pool.name);
-                                  setIsPoolDropdownOpen(false);
-                                }}
-                              >
-                                <div className="flex items-center space-x-1 flex-shrink-0">
-                                  <TokenLogo symbol={pool.tokenA} size="sm" />
-                                  <TokenLogo symbol={pool.tokenB} size="sm" />
-                                </div>
-                                <span className="flex-1 text-left text-sm truncate">{pool.name}</span>
-                                <div className="flex items-center space-x-1 flex-shrink-0">
-                                  <Badge variant="secondary" className="bg-[#7FFFD4] text-[#0B1A1E] text-xs flex items-center">
-                                    <div className="w-3 h-3 mr-1 flex-shrink-0">
-                                      <TokenLogo symbol="WHISKER" size="sm" className="opacity-80 w-full h-full object-contain" />
-                                    </div>
-                                    0.3%
-                                  </Badge>
-                                  <Badge variant="outline" className="border-green-400 text-green-400 text-xs whitespace-nowrap">
-                                    {pool.realAPR}
-                                  </Badge>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    {selectedPool && (() => {
-                      const pool = realTimePools.find(p => p.name === selectedPool);
-                      if (!pool) return null;
-                      
-                      return (
-                        <>
-                          {/* Real-time Pool Stats */}
-                          <div className="bg-slate-700/50 rounded-lg p-4 grid grid-cols-3 gap-4 text-sm">
-                            <div className="text-center">
-                              <div className="text-[#7FFFD4] font-medium">{pool.realTVL}</div>
-                              <div className="text-slate-400">TVL</div>
-                            </div>
-                            <div className="text-center">
-                              <div className="text-green-400 font-medium">{pool.realAPR}</div>
-                              <div className="text-slate-400">APR</div>
-                            </div>
-                            <div className="text-center">
-                              <div className="text-blue-400 font-medium">{pool.real24hVolume}</div>
-                              <div className="text-slate-400">24h Volume</div>
-                            </div>
-                          </div>
-
-                          {/* Token Inputs */}
-                          <div className="space-y-4">
-                            <div className="space-y-2">
-                              <Label className="text-slate-200">
-                                {pool.tokenA} Amount
-                              </Label>
-                              <div className="relative">
-                                <Input
-                                  type="number"
-                                  placeholder="0.0"
-                                  value={token0Amount}
-                                  onChange={(e) => {
-                                    setToken0Amount(e.target.value);
-                                    calculateTokenAmounts(e.target.value, true);
-                                  }}
-                                  className="bg-slate-700 border-slate-600 text-white pr-16"
-                                />
-                                <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center space-x-2">
-                                  <TokenLogo symbol={pool.tokenA} size="sm" />
-                                  <span className="text-sm text-slate-300 font-medium">{pool.tokenA}</span>
-                                </div>
-                              </div>
-                              {wallet.isConnected && (
-                                <div className="text-xs text-gray-400 flex items-center justify-between">
-                                  <span>Balance: {tokenBalances[pool.tokenA] || '0.0000'} {pool.tokenA}</span>
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => {
-                                      const maxAmount = tokenBalances[pool.tokenA] || '0.0000';
-                                      setToken0Amount(maxAmount);
-                                      calculateTokenAmounts(maxAmount, true);
-                                    }}
-                                    className="h-auto p-1 text-xs text-hyper-mint hover:text-white"
-                                  >
-                                    MAX
-                                  </Button>
-                                </div>
-                              )}
-                            </div>
-
-                            <div className="flex justify-center">
-                              <Plus className="w-6 h-6 text-[#7FFFD4]" />
-                            </div>
-
-                            <div className="space-y-2">
-                              <Label className="text-slate-200">
-                                {pool.tokenB} Amount
-                              </Label>
-                              <div className="relative">
-                                <Input
-                                  type="number"
-                                  placeholder="0.0"
-                                  value={token1Amount}
-                                  onChange={(e) => {
-                                    setToken1Amount(e.target.value);
-                                    calculateTokenAmounts(e.target.value, false);
-                                  }}
-                                  className="bg-slate-700 border-slate-600 text-white pr-16"
-                                />
-                                <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center space-x-2">
-                                  <TokenLogo symbol={pool.tokenB} size="sm" />
-                                  <span className="text-sm text-slate-300 font-medium">{pool.tokenB}</span>
-                                </div>
-                              </div>
-                              {wallet.isConnected && (
-                                <div className="text-xs text-gray-400 flex items-center justify-between">
-                                  <span>Balance: {tokenBalances[pool.tokenB] || '0.0000'} {pool.tokenB}</span>
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => {
-                                      const maxAmount = tokenBalances[pool.tokenB] || '0.0000';
-                                      setToken1Amount(maxAmount);
-                                      calculateTokenAmounts(maxAmount, false);
-                                    }}
-                                    className="h-auto p-1 text-xs text-hyper-mint hover:text-white"
-                                  >
-                                    MAX
-                                  </Button>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-
-                          {/* Slippage Settings */}
-                          <div className="space-y-2">
-                            <Label className="text-slate-200">Slippage Tolerance</Label>
-                            <div className="flex space-x-2">
-                              {["0.1", "0.5", "1.0"].map((value) => (
-                                <Button
-                                  key={value}
-                                  variant={slippageTolerance === value ? "default" : "outline"}
-                                  size="sm"
-                                  onClick={() => setSlippageTolerance(value)}
-                                  className={slippageTolerance === value ? "bg-[#7FFFD4] text-[#0B1A1E]" : "border-slate-600 text-slate-300"}
-                                >
-                                  {value}%
-                                </Button>
-                              ))}
-                              <Input
-                                type="number"
-                                placeholder="Custom"
-                                value={slippageTolerance}
-                                onChange={(e) => setSlippageTolerance(e.target.value)}
-                                className="w-20 bg-slate-700 border-slate-600 text-white text-sm"
-                              />
-                            </div>
-                          </div>
-
-                          {/* Add Liquidity Button */}
-                          <Button
-                            onClick={handleAddLiquidity}
-                            disabled={!wallet.isConnected || !token0Amount || !token1Amount || isLoading}
-                            className="w-full bg-gradient-to-r from-[#7FFFD4] to-[#00FFE0] hover:from-[#7FFFD4]/80 hover:to-[#00FFE0]/80 text-[#0B1A1E] font-medium py-3"
-                          >
-                            {isLoading ? "Adding Liquidity..." : !wallet.isConnected ? "Connect Wallet" : "Add Liquidity"}
-                          </Button>
-                        </>
-                      );
-                    })()}
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* Pool Info Sidebar */}
-              <div className="space-y-4">
-                {selectedPool && (() => {
-                  const pool = realTimePools.find(p => p.name === selectedPool);
-                  if (!pool) return null;
-                  
-                  return (
-                    <Card className="bg-slate-800/50 border-slate-700">
-                      <CardHeader className="pb-3">
-                        <CardTitle className="text-white text-lg flex items-center">
-                          <div className="flex -space-x-2 mr-3">
-                            <TokenLogo symbol={pool.tokenA} size="sm" />
-                            <TokenLogo symbol={pool.tokenB} size="sm" />
-                          </div>
-                          {pool.name}
-                          <Badge variant="secondary" className="ml-2 bg-[#7FFFD4] text-[#0B1A1E]">
-                            0.3%
-                          </Badge>
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        <div className="grid grid-cols-2 gap-4 text-sm">
-                          <div>
-                            <div className="text-slate-400">TVL</div>
-                            <div className="text-white font-medium">{pool.realTVL}</div>
-                          </div>
-                          <div>
-                            <div className="text-slate-400">APR</div>
-                            <div className="text-green-400 font-medium">{pool.realAPR}</div>
-                          </div>
-                          <div>
-                            <div className="text-slate-400">24h Volume</div>
-                            <div className="text-white font-medium">{pool.real24hVolume}</div>
-                          </div>
-                          <div>
-                            <div className="text-slate-400">Fee Tier</div>
-                            <div className="text-white font-medium">0.3%</div>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  );
-                })()}
-
-                {/* Rewards Info */}
-                <Card className="bg-gradient-to-br from-[#7FFFD4]/10 to-[#00FFE0]/10 border-[#7FFFD4]/30">
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-white text-lg flex items-center">
-                      <Zap className="w-5 h-5 mr-2 text-[#7FFFD4]" />
-                      Earn Rewards
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-3 text-sm">
-                    <div className="flex items-center justify-between">
-                      <span className="text-slate-300">Trading Fees</span>
-                      <span className="text-white font-medium">0.3%</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-slate-300">WHISKER Rewards</span>
-                      <span className="text-[#7FFFD4] font-medium">Coming Soon</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-slate-300">Points Multiplier</span>
-                      <span className="text-blue-400 font-medium">2.5x</span>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-          </TabsContent>
-
-          {/* Pools Tab */}
-          <TabsContent value="pools" className="space-y-6">
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-white">All Liquidity Pools</h2>
-                <div className="text-sm text-slate-400">
-                  Live data from HyperEVM • Updates every 10s
-                </div>
-              </div>
-              <div className="grid gap-4 max-h-[70vh] overflow-y-auto">
-                {realTimePools.map((pool) => (
-                  <Card key={pool.name} className="bg-slate-800/50 border-slate-700 hover:border-teal-700/50 transition-colors">
-                    <CardContent className="p-6">
-                      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
-                        <div className="flex items-center space-x-4 min-w-0 flex-1">
-                          <div className="flex items-center space-x-1">
-                            <TokenLogo symbol={pool.tokenA} size="md" />
-                            <TokenLogo symbol={pool.tokenB} size="md" />
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <div className="text-white font-medium text-lg truncate">
-                              {pool.name}
-                            </div>
-                            <div className="flex items-center space-x-2 mt-1">
-                              <Badge variant="secondary" className="bg-teal-600 text-white text-xs px-2 py-0.5">
-                                0.3%
-                              </Badge>
-                              <Badge variant="outline" className="border-green-400 text-green-400 text-xs px-2 py-0.5">
-                                {pool.priceChange24h}
-                              </Badge>
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 text-sm">
-                          <div className="text-center lg:text-right">
-                            <div className="text-slate-400 text-xs">TVL</div>
-                            <div className="text-white font-medium text-sm">{pool.realTVL}</div>
-                          </div>
-                          <div className="text-center lg:text-right">
-                            <div className="text-slate-400 text-xs">APR</div>
-                            <div className="text-green-400 font-medium text-sm">{pool.realAPR}</div>
-                          </div>
-                          <div className="text-center lg:text-right">
-                            <div className="text-slate-400 text-xs">24h Volume</div>
-                            <div className="text-white font-medium text-sm">{pool.real24hVolume}</div>
-                          </div>
-                          <div className="text-center lg:text-right">
-                            <div className="text-slate-400 text-xs">Price</div>
-                            <div className="text-blue-400 font-medium text-sm">${pool.price}</div>
-                          </div>
-                        </div>
-
-                        <div className="flex justify-center lg:justify-end">
-                          <Button
-                            onClick={() => {
-                              setSelectedPool(pool.name);
-                              setSelectedTab("add");
-                            }}
-                            className="bg-gradient-to-r from-[#7FFFD4] to-[#00FFE0] hover:from-[#7FFFD4]/80 hover:to-[#00FFE0]/80 text-[#0B1A1E] font-medium px-4 py-2"
-                          >
-                            Add Liquidity
-                          </Button>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </div>
-          </TabsContent>
-
-          {/* My Positions Tab */}
-          <TabsContent value="positions" className="space-y-6">
-            {!wallet.isConnected ? (
-              <Card className="bg-slate-800/50 border-slate-700">
-                <CardContent className="p-8 text-center">
-                  <div className="text-slate-400 mb-4">Connect your wallet to view liquidity positions</div>
-                  <Button 
-                    onClick={() => wallet.connect()}
-                    className="bg-gradient-to-r from-[#7FFFD4] to-[#00FFE0] hover:from-[#7FFFD4]/80 hover:to-[#00FFE0]/80 text-[#0B1A1E] font-medium"
-                  >
-                    Connect Wallet
-                  </Button>
-                </CardContent>
-              </Card>
-            ) : actualPositions.length === 0 ? (
-              <Card className="bg-slate-800/50 border-slate-700">
-                <CardContent className="p-8 text-center">
-                  <Droplets className="w-12 h-12 text-slate-600 mx-auto mb-4" />
-                  <div className="text-slate-400 mb-4">No liquidity positions found</div>
-                  <div className="flex justify-center">
-                    <Button 
-                      onClick={() => setSelectedTab("add")}
-                      className="bg-gradient-to-r from-[#7FFFD4] to-[#00FFE0] hover:from-[#7FFFD4]/80 hover:to-[#00FFE0]/80 text-[#0B1A1E] font-medium"
-                    >
-                      Add Your First Position
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="space-y-4">
+      <div className="container mx-auto px-4 py-8 max-w-7xl">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Main Content */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Add/Remove Liquidity Card */}
+            <Card className="bg-slate-800/50 border-slate-700">
+              <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-semibold text-white">My Positions</h2>
+                  <div className="flex items-center space-x-3">
+                    <img 
+                      src="/whisker-logo.png" 
+                      alt="WhiskerSwap Logo" 
+                      className="w-6 h-6 object-contain rounded-full"
+                      onLoad={() => console.log('✅ Logo loaded in card')}
+                      onError={(e) => {
+                        console.log('❌ Logo failed in card, trying fallback');
+                        e.currentTarget.src = '/whisker-logo.png';
+                      }}
+                    />
+                    <CardTitle className="text-white">Add Liquidity</CardTitle>
+                  </div>
+                  <Badge variant="secondary" className="bg-[#7FFFD4]/10 text-[#7FFFD4] border-[#7FFFD4]/20">
+                    Live on HyperEVM
+                  </Badge>
                 </div>
+                <CardDescription className="text-slate-400">
+                  Provide liquidity to earn fees and rewards from trades
+                </CardDescription>
+              </CardHeader>
 
-                <div className="grid gap-4">
-                  {actualPositions.map((position, index) => (
-                    <Card key={position.id} className="bg-slate-800/50 border-slate-700">
-                      <CardContent className="p-6">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-4">
-                            <div className="flex items-center space-x-1">
-                              <TokenLogo symbol={position.token0Symbol} size="sm" />
-                              <TokenLogo symbol={position.token1Symbol} size="sm" />
-                            </div>
-                            <div className="text-white font-medium text-lg">
-                              {position.token0Symbol}/{position.token1Symbol}
-                            </div>
-                            {(position.status || 'active') === 'unstaking' ? (
-                              <Badge variant="secondary" className="bg-yellow-600 text-white">
-                                Unstaking ({Math.ceil((new Date(position.unstakeAvailableAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24))}d remaining)
-                              </Badge>
-                            ) : (position.status || 'active') === 'completed' ? (
-                              <Badge variant="secondary" className="bg-gray-600 text-white">
-                                Completed
-                              </Badge>
-                            ) : (
-                              <Badge variant="secondary" className="bg-green-600 text-white">
-                                Active
-                              </Badge>
-                            )}
-                          </div>
-                          
-                          <div className="text-right">
-                            <div className="text-white font-semibold text-lg">
-                              {position.totalValueUSD}
-                            </div>
-                            <div className="text-gray-400 text-sm">
-                              {parseFloat(position.lpBalance).toFixed(4)} LP
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <div className="mt-4 grid grid-cols-3 gap-4">
-                          <div className="text-center">
-                            <div className="text-gray-400 text-sm">Pool Share</div>
-                            <div className="text-white font-medium">
-                              {position.sharePercentage.toFixed(4)}%
-                            </div>
-                          </div>
-                          <div className="text-center">
-                            <div className="text-gray-400 text-sm">Fees Earned</div>
-                            <div className="text-green-400 font-medium">
-                              {position.feesEarnedUSD}
-                            </div>
-                          </div>
-                          <div className="text-center">
-                            <div className="text-gray-400 text-sm">APR</div>
-                            <div className="text-hyper-mint font-medium">
-                              {position.apr}%
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <div className="mt-4 bg-slate-700/50 rounded-lg p-3">
-                          <div className="grid grid-cols-2 gap-3 text-sm">
-                            <div>
-                              <span className="text-gray-400">{position.token0Symbol}: </span>
-                              <span className="text-white">{parseFloat(position.token0Amount).toFixed(4)}</span>
-                            </div>
-                            <div>
-                              <span className="text-gray-400">{position.token1Symbol}: </span>
-                              <span className="text-white">{parseFloat(position.token1Amount).toFixed(4)}</span>
-                            </div>
-                          </div>
-                        </div>
-                        
+              <CardContent className="space-y-6">
+                <Tabs value={selectedTab} onValueChange={setSelectedTab} className="w-full">
+                  <TabsList className="grid w-full grid-cols-2 bg-slate-700/50">
+                    <TabsTrigger 
+                      value="add" 
+                      className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#7FFFD4] data-[state=active]:to-[#00FFE0] data-[state=active]:text-black font-medium"
+                    >
+                      Add Liquidity
+                    </TabsTrigger>
+                    <TabsTrigger 
+                      value="remove" 
+                      className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#7FFFD4] data-[state=active]:to-[#00FFE0] data-[state=active]:text-black font-medium"
+                    >
+                      Remove Liquidity
+                    </TabsTrigger>
+                  </TabsList>
 
-                        
-                        <div className="mt-6 flex gap-3">
-                          {position.status === "Active" ? (
-                            <Button
-                              onClick={() => {
-                                console.log(`🔒 Starting unstaking for position ${position.id}`);
-                                realisticPositionSystem.startUnstaking(wallet.address, position.id);
-                                setActualPositions(realisticPositionSystem.getUserPositions(wallet.address));
-                                toast({
-                                  title: "Unstaking Started",
-                                  description: `Your ${position.token0Symbol}/${position.token1Symbol} position is now unstaking. You can withdraw after 7 days.`,
-                                });
+                  <TabsContent value="add" className="space-y-6 mt-6">
+                    {/* Pool Selection */}
+                    <div className="space-y-2">
+                      <Label className="text-white">Select Pool</Label>
+                      <Select value={selectedPool} onValueChange={setSelectedPool}>
+                        <SelectTrigger className="bg-slate-700/50 border-slate-600 text-white">
+                          <SelectValue placeholder="Choose a liquidity pool" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-slate-800 border-slate-600">
+                          {realTimePools.map((pool) => (
+                            <SelectItem key={pool.name} value={pool.name} className="text-white hover:bg-slate-700">
+                              <div className="flex items-center justify-between w-full">
+                                <div className="flex items-center space-x-2">
+                                  <span className="font-medium">{pool.name}</span>
+                                  <Badge variant="outline" className="text-xs border-[#7FFFD4]/30 text-[#7FFFD4]">
+                                    {pool.apr}% APR
+                                  </Badge>
+                                </div>
+                                <span className="text-slate-400 text-sm">{pool.tvl}</span>
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {selectedPool && (
+                      <>
+                        {/* Token 0 Input */}
+                        <div className="space-y-2">
+                          <div className="flex justify-between">
+                            <Label className="text-white">
+                              {realTimePools.find(p => p.name === selectedPool)?.tokenA} Amount
+                            </Label>
+                            <span className="text-xs text-slate-400">
+                              Balance: {tokenBalances[realTimePools.find(p => p.name === selectedPool)?.tokenA || ''] || '0.0000'}
+                            </span>
+                          </div>
+                          <div className="relative">
+                            <Input
+                              type="number"
+                              placeholder="0.0"
+                              value={token0Amount}
+                              onChange={(e) => {
+                                setToken0Amount(e.target.value);
+                                calculateTokenAmounts(e.target.value, true);
                               }}
-                              variant="outline"
-                              className="flex-1 border-orange-500 text-orange-400 hover:bg-orange-500/10"
-                            >
-                              Start Unstaking
-                            </Button>
-                          ) : position.status === "Unstaking" ? (
+                              className="bg-slate-700/50 border-slate-600 text-white pr-16"
+                            />
                             <Button
-                              disabled
-                              variant="outline"
-                              className="flex-1 border-orange-500/50 text-orange-400/50"
+                              variant="ghost"
+                              size="sm"
+                              className="absolute right-2 top-1/2 -translate-y-1/2 text-[#7FFFD4] hover:bg-[#7FFFD4]/10 h-7 px-2"
+                              onClick={() => {
+                                const balance = tokenBalances[realTimePools.find(p => p.name === selectedPool)?.tokenA || ''] || '0';
+                                setToken0Amount(balance);
+                                calculateTokenAmounts(balance, true);
+                              }}
                             >
-                              Unstaking ({Math.ceil((7 * 24 * 60 * 60 * 1000 - (Date.now() - position.unstakeStartTime!)) / (24 * 60 * 60 * 1000))} days left)
+                              MAX
                             </Button>
+                          </div>
+                        </div>
+
+                        {/* Plus Icon */}
+                        <div className="flex justify-center">
+                          <div className="bg-slate-700/50 rounded-full p-2">
+                            <Plus className="w-4 h-4 text-[#7FFFD4]" />
+                          </div>
+                        </div>
+
+                        {/* Token 1 Input */}
+                        <div className="space-y-2">
+                          <div className="flex justify-between">
+                            <Label className="text-white">
+                              {realTimePools.find(p => p.name === selectedPool)?.tokenB} Amount
+                            </Label>
+                            <span className="text-xs text-slate-400">
+                              Balance: {tokenBalances[realTimePools.find(p => p.name === selectedPool)?.tokenB || ''] || '0.0000'}
+                            </span>
+                          </div>
+                          <div className="relative">
+                            <Input
+                              type="number"
+                              placeholder="0.0"
+                              value={token1Amount}
+                              onChange={(e) => {
+                                setToken1Amount(e.target.value);
+                                calculateTokenAmounts(e.target.value, false);
+                              }}
+                              className="bg-slate-700/50 border-slate-600 text-white pr-16"
+                            />
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="absolute right-2 top-1/2 -translate-y-1/2 text-[#7FFFD4] hover:bg-[#7FFFD4]/10 h-7 px-2"
+                              onClick={() => {
+                                const balance = tokenBalances[realTimePools.find(p => p.name === selectedPool)?.tokenB || ''] || '0';
+                                setToken1Amount(balance);
+                                calculateTokenAmounts(balance, false);
+                              }}
+                            >
+                              MAX
+                            </Button>
+                          </div>
+                        </div>
+
+                        {/* Slippage Tolerance */}
+                        <div className="space-y-2">
+                          <Label className="text-white">Slippage Tolerance</Label>
+                          <div className="flex space-x-2">
+                            {['0.1', '0.5', '1.0'].map((value) => (
+                              <Button
+                                key={value}
+                                variant={slippageTolerance === value ? "default" : "outline"}
+                                size="sm"
+                                className={`h-8 px-4 ${
+                                  slippageTolerance === value 
+                                    ? 'bg-gradient-to-r from-[#7FFFD4] to-[#00FFE0] text-black' 
+                                    : 'border-slate-600 hover:border-[#7FFFD4] text-white'
+                                }`}
+                                onClick={() => setSlippageTolerance(value)}
+                              >
+                                {value}%
+                              </Button>
+                            ))}
+                            <Input
+                              type="number"
+                              placeholder="Custom"
+                              value={slippageTolerance}
+                              onChange={(e) => setSlippageTolerance(e.target.value)}
+                              className="w-20 h-8 bg-slate-700/50 border-slate-600 text-white text-center"
+                            />
+                          </div>
+                        </div>
+
+                        {/* Add Liquidity Button */}
+                        <Button
+                          onClick={handleAddLiquidity}
+                          disabled={!wallet.isConnected || !token0Amount || !token1Amount || isLoading}
+                          className="w-full bg-gradient-to-r from-[#7FFFD4] to-[#00FFE0] text-black font-semibold hover:opacity-90 disabled:opacity-50"
+                        >
+                          {isLoading ? (
+                            <div className="flex items-center space-x-2">
+                              <div className="animate-spin rounded-full h-4 w-4 border-2 border-black border-t-transparent"></div>
+                              <span>Adding Liquidity...</span>
+                            </div>
+                          ) : !wallet.isConnected ? (
+                            "Connect Wallet to Add Liquidity"
                           ) : (
-                            <Button
-                              onClick={() => {
-                                console.log(`💰 Unstaking position ${position.id}`);
-                                realisticPositionSystem.removePosition(wallet.address, position.id);
-                                setActualPositions(realisticPositionSystem.getUserPositions(wallet.address));
-                                toast({
-                                  title: "Position Unstaked",
-                                  description: `Successfully unstaked ${position.token0Symbol}/${position.token1Symbol} position`,
-                                });
-                              }}
-                              className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 text-white"
-                            >
-                              Unstake
-                            </Button>
+                            "Add Liquidity"
                           )}
-                          <Button
-                            onClick={() => {
-                              console.log(`💰 Adding more liquidity to ${position.token0Symbol}/${position.token1Symbol}`);
-                              setSelectedPool(`${position.token0Symbol}/${position.token1Symbol}`);
-                              setSelectedTab("add");
-                            }}
-                            className="flex-1 bg-gradient-to-r from-hyper-mint to-hyper-teal text-black"
-                          >
-                            Add More
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
+                        </Button>
+                      </>
+                    )}
+                  </TabsContent>
+
+                  <TabsContent value="remove" className="space-y-6 mt-6">
+                    <div className="text-center py-8">
+                      <Minus className="w-12 h-12 text-slate-500 mx-auto mb-4" />
+                      <h3 className="text-lg font-medium text-white mb-2">Remove Liquidity</h3>
+                      <p className="text-slate-400">
+                        Select a position from your portfolio to remove liquidity
+                      </p>
+                    </div>
+                  </TabsContent>
+                </Tabs>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-6">
+            {/* Pool Stats */}
+            <Card className="bg-slate-800/50 border-slate-700">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center space-x-2">
+                  <Droplets className="w-5 h-5 text-[#7FFFD4]" />
+                  <span>Pool Overview</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <div className="text-slate-400">Total TVL</div>
+                    <div className="text-white font-medium">{totalTVL}</div>
+                  </div>
+                  <div>
+                    <div className="text-slate-400">24h Volume</div>
+                    <div className="text-white font-medium">$2.4M</div>
+                  </div>
+                  <div>
+                    <div className="text-slate-400">24h Fees</div>
+                    <div className="text-white font-medium">$7.2K</div>
+                  </div>
+                  <div>
+                    <div className="text-slate-400">Active Pools</div>
+                    <div className="text-white font-medium">{realTimePools.length}</div>
+                  </div>
                 </div>
-              </div>
-            )}
-          </TabsContent>
-        </Tabs>
-      </div>
-    </div>
-  );
-}
+              </CardContent>
+            </Card>
+
+            {/* Your Positions */}
+            <Card className="bg-slate-800/50 border-slate-700">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center space-x-2">
+                  <Coins className="w-5 h-
